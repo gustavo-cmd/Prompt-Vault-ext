@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PromptVault - Painel de Gerenciamento</title>
+  <link rel="stylesheet" href="dashboard.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <path d="M12 8v4"/>
+          <path d="M12 16h.01"/>
+        </svg>
+        <h2>Prompt<span>Vault</span></h2>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button id="nav-all" class="nav-item active">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"/>
+            <rect x="14" y="3" width="7" height="7"/>
+            <rect x="14" y="14" width="7" height="7"/>
+            <rect x="3" y="14" width="7" height="7"/>
+          </svg>
+          Todos os Prompts
+        </button>
+
+        <div class="sidebar-section-title">Tags</div>
+        <div id="sidebar-tags" class="sidebar-tags">
+          <!-- Dynamic tags list loaded here -->
+        </div>
+      </nav>
+
+      <!-- Sidebar Stats & Actions -->
+      <div class="sidebar-footer">
+        <div class="stats-panel">
+          <div class="stat-item">
+            <span class="stat-value" id="stat-total-prompts">0</span>
+            <span class="stat-label">Prompts</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value" id="stat-total-tags">0</span>
+            <span class="stat-label">Tags</span>
+          </div>
+        </div>
+
+        <div class="backup-actions">
+          <button id="btn-export" class="btn btn-secondary btn-sm" title="Baixar backup dos prompts">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Exportar JSON
+          </button>
+          
+          <button id="btn-import-trigger" class="btn btn-secondary btn-sm" title="Importar backup de prompts">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            Importar JSON
+          </button>
+          <input type="file" id="file-import" accept=".json" style="display: none;">
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Search & Filters Header -->
+      <section class="content-header">
+        <div class="search-bar">
+          <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="text" id="dashboard-search" placeholder="Pesquisar prompts por título, tag ou conteúdo...">
+        </div>
+        
+        <div class="filter-actions">
+          <div class="select-wrapper">
+            <select id="sort-select" class="sort-select">
+              <option value="recent">Mais Recentes</option>
+              <option value="oldest">Mais Antigos</option>
+              <option value="alphabetical">Ordem Alfabética</option>
+              <option value="lastused">Mais Utilizados</option>
+            </select>
+            <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </div>
+          
+          <button id="btn-add-prompt" class="btn btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Novo Prompt
+          </button>
+        </div>
+      </section>
+
+      <!-- Prompts Grid -->
+      <section class="grid-section">
+        <div class="filter-indicator-row" id="filter-indicator-row" style="display: none;">
+          <span class="filter-label">Filtro ativo: <strong id="active-filter-name">Nenhum</strong></span>
+          <button id="btn-clear-tag-filter" class="btn-clear-filter">Remover Filtro</button>
+        </div>
+        
+        <div id="dashboard-prompts-grid" class="prompts-grid">
+          <!-- Prompt cards injected here -->
+        </div>
+      </section>
+    </main>
+
+    <!-- Editor Slide-in Drawer -->
+    <div id="editor-drawer" class="drawer">
+      <div class="drawer-backdrop" id="drawer-backdrop"></div>
+      <div class="drawer-container">
+        <div class="drawer-header">
+          <h3 id="drawer-title">Novo Prompt</h3>
+          <button id="btn-close-drawer" class="icon-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+        
+        <form id="editor-form" class="drawer-form">
+          <input type="hidden" id="field-id">
+          
+          <div class="form-group">
+            <label for="field-title">Título <span class="required">*</span></label>
+            <input type="text" id="field-title" placeholder="Ex: Refatoração de Código" required autocomplete="off">
+          </div>
+          
+          <div class="form-group">
+            <label for="field-description">Descrição Curta</label>
+            <input type="text" id="field-description" placeholder="Ex: Analisa código buscando otimizações e segurança" autocomplete="off">
+          </div>
+          
+          <div class="form-group">
+            <label for="field-tags">Tags (separadas por vírgula)</label>
+            <input type="text" id="field-tags" placeholder="Ex: Programação, IA, Javascript" autocomplete="off">
+          </div>
+          
+          <div class="form-group flex-fill">
+            <div class="label-row">
+              <label for="field-content">Prompt <span class="required">*</span></label>
+              <span class="vars-hint">Use <code>{{variavel}}</code> para campos dinâmicos</span>
+            </div>
+            <textarea id="field-content" placeholder="Aja como um programador sênior em {{linguagem}} e explique o seguinte código:&#10;&#10;{{codigo}}" required></textarea>
+            <div class="textarea-footer">
+              <span id="char-count">0 caracteres</span>
+              <span id="word-count">0 palavras</span>
+            </div>
+          </div>
+
+          <!-- Variable Preview Area -->
+          <div class="form-group">
+            <label>Visualização com Variáveis Destacadas</label>
+            <div id="prompt-preview" class="prompt-preview-box">
+              <span class="preview-placeholder">Escreva seu prompt acima para ver o destaque de variáveis...</span>
+            </div>
+          </div>
+          
+          <div class="drawer-footer">
+            <button type="button" id="btn-cancel-editor" class="btn btn-secondary">Cancelar</button>
+            <button type="submit" id="btn-save-prompt" class="btn btn-primary">Salvar Prompt</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Variable Injection Overlay (Modal) -->
+  <div id="variable-overlay" class="overlay">
+    <div class="overlay-card">
+      <div class="overlay-header">
+        <h3>Preencher Variáveis</h3>
+        <p class="overlay-subtitle">Este prompt contém placeholders dinâmicos. Preencha-os antes de copiar:</p>
+      </div>
+      <form id="variable-form" class="overlay-form">
+        <div id="variables-inputs-container" class="inputs-container">
+          <!-- Dynamic inputs go here -->
+        </div>
+        <div class="overlay-actions">
+          <button type="button" id="btn-cancel-variables" class="btn btn-secondary">Cancelar</button>
+          <button type="submit" class="btn btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Copiar Preenchido
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification System -->
+  <div id="toast" class="toast">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+    <span id="toast-message">Salvo com sucesso!</span>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../common/storage.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>
