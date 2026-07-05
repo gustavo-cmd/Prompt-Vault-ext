@@ -26,14 +26,16 @@
 }
 
 body {
-  width: 400px;
-  height: 550px;
+  width: 100%;
+  height: 100vh;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   background-color: var(--bg-primary);
   color: var(--text-primary);
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  min-width: 350px;
+  min-height: 400px;
 }
 
 /* Custom Scrollbar */
@@ -61,6 +63,22 @@ body {
   background-color: var(--bg-secondary);
   border-bottom: 1px solid var(--border-light);
   z-index: 10;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.btn-close {
+  border-color: rgba(239, 68, 68, 0.3) !important;
+}
+
+.btn-close:hover {
+  background-color: rgba(239, 68, 68, 0.15) !important;
+  border-color: rgba(239, 68, 68, 0.4) !important;
+  color: #ef4444 !important;
 }
 
 .logo-area {

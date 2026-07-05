@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const tagsContainer = document.getElementById('tags-container');
   const promptsList = document.getElementById('prompts-list');
   const btnDashboard = document.getElementById('btn-dashboard');
+  const btnClosePopup = document.getElementById('btn-close-popup');
   const btnNewPrompt = document.getElementById('btn-new-prompt');
   
   // Overlay Elements
@@ -383,6 +384,19 @@ document.addEventListener('DOMContentLoaded', async () => {
   btnNewPrompt.addEventListener('click', () => {
     openDashboard('?action=new');
   });
+
+  // Close popup window - communicate with background script
+  if (btnClosePopup) {
+    btnClosePopup.addEventListener('click', () => {
+      // Send message to background script to close the popup window
+      if (chrome.runtime && chrome.runtime.sendMessage) {
+        chrome.runtime.sendMessage({ action: 'closePopup' });
+      } else {
+        // Fallback for regular windows
+        window.close();
+      }
+    });
+  }
 
   // Helper function to escape HTML special chars
   function escapeHTML(str) {
