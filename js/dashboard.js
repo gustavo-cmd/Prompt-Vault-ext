@@ -395,7 +395,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     formData.forEach((value, key) => {
       filledValues[key] = value;
-      const escapedKey = key.replace(/[-\\/\\^$*+?.()|[\\]{}]/g, '\\$&');
+      const escapedKey = key.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
       const regex = new RegExp(`\\{\\{\\s*${escapedKey}\\s*\\}\\}`, 'g');
       finalPromptContent = finalPromptContent.replace(regex, value);
     });
