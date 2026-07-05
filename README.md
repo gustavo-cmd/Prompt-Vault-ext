@@ -29,13 +29,16 @@ Uma extensão poderosa e elegante para salvar, organizar, buscar e copiar prompt
 ```
 PromptVault/
 ├── manifest.json        # Configuração da extensão
-├── popup.html           # Interface do popup
-├── popup.css            # Estilos do popup
-├── popup.js             # Lógica do popup
-├── dashboard.html       # Painel de gerenciamento
-├── dashboard.css        # Estilos do dashboard
-├── dashboard.js         # Lógica do dashboard
-├── storage.js           # Módulo de armazenamento unificado
+├── html/
+│   ├── popup.html       # Interface do popup
+│   └── dashboard.html   # Painel de gerenciamento
+├── css/
+│   ├── popup.css        # Estilos do popup
+│   └── dashboard.css    # Estilos do dashboard
+├── js/
+│   ├── popup.js         # Lógica do popup
+│   ├── dashboard.js     # Lógica do dashboard
+│   └── storage.js       # Módulo de armazenamento unificado
 ├── icon16.png           # Ícone 16x16
 ├── icon32.png           # Ícone 32x32
 ├── icon48.png           # Ícone 48x48
