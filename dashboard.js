@@ -325,8 +325,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // Open Variable Overlay
+  // Open Variable Overlay with safety checks
   function openVariableOverlay(prompt, variables) {
+    if (!prompt || !variables || !Array.isArray(variables)) {
+      console.error('Invalid prompt or variables for overlay');
+      return;
+    }
+    
     currentPromptForVariables = prompt;
     variablesInputsContainer.innerHTML = '';
 
@@ -361,7 +366,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     variableOverlay.classList.add('active');
     
     setTimeout(() => {
-      variablesInputsContainer.querySelector('input, textarea')?.focus();
+      const firstInput = variablesInputsContainer.querySelector('input, textarea');
+      if (firstInput) {
+        firstInput.focus();
+      }
     }, 100);
   }
 
@@ -373,18 +381,31 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // Variable Overlay Event Listeners
+  // Variable Overlay Event Listeners with validation
   variableForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    if (!currentPromptForVariables) return;
+    if (!currentPromptForVariables) {
+      console.error('No prompt selected for variable substitution');
+      return;
+    }
 
     let finalPromptContent = currentPromptForVariables.content;
     const formData = new FormData(variableForm);
+    const filledValues = {};
 
     formData.forEach((value, key) => {
-      const escapedKey = key.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-      const regex = new RegExp(`\\{\\{\\s*${escapedKey}\\s*\\}\\}`, 'g');
+      filledValues[key] = value;
+      const escapedKey = key.replace(/[-\\/\\\\^$*+?.()|[\\]{}]/g, '\\\\$&');
+      const regex = new RegExp(`\\\\{\\\\{\\\\s*${escapedKey}\\\\s*\\\\}\\\\}`, 'g');
       finalPromptContent = finalPromptContent.replace(regex, value);
     });
+
+    // Validate that all variables were filled
+    const emptyVars = Object.entries(filledValues).filter(([_, value]) => !value.trim());
+    if (emptyVars.length > 0) {
+      alert(`Por favor, preencha todos os campos: ${emptyVars.map(([k]) => k).join(', ')}`);
+      return;
+    }
 
     copyToClipboard(finalPromptContent, 'Prompt preenchido copiado com sucesso!', currentPromptForVariables.id);
     closeVariableOverlay();
