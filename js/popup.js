@@ -278,8 +278,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       filledValues[key] = value;
       // Replace all occurrences of {{key}}
       // Escape special characters in key for regex matching
-      const escapedKey = key.replace(/[-\\/\\\\^$*+?.()|[\\]{}]/g, '\\\\$&');
-      const regex = new RegExp(`\\\\{\\\\{\\\\s*${escapedKey}\\\\s*\\\\}\\\\}`, 'g');
+      const escapedKey = key.replace(/[-/\^$*+?.()|[\]{}]/g, '\$&');
+      const regex = new RegExp(`\{\{\s*${escapedKey}\s*\}\}`, 'g');
       finalPromptContent = finalPromptContent.replace(regex, value);
     });
 
